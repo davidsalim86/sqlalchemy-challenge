@@ -1,7 +1,5 @@
 # Import dependencies
 import datetime as dt
-from this import d
-from unittest import result
 import numpy as np
 import pandas as pd
 
