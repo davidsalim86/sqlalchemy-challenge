@@ -99,16 +99,16 @@ def calc_temps_start(start):
     session = Session(engine)
     
     result4 = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-        filter(func.strftime("%Y-%m-%d", Measurement.date) >= start).all()
+        filter(func.strftime("%Y-%m-%d", Measurement.date) >= func.strftime("%Y-%m-%d",start)).all()
     
     session.close()
     
-    result5_list = list(np.ravel(result4))
+    result4_list = list(np.ravel(result4))
     
     last_date = '2017-08-23'
     
     if start <= last_date:
-        return jsonify(result5_list) 
+        return jsonify(result4_list) 
     return jsonify({"error": f"date {start} is not found. Insert start_date in yyyy-mm-dd format. The data is available up to {last_date}"}), 404
 
 @app.route("/api/v1.0/<start>/<end>")
@@ -117,8 +117,8 @@ def calc_temps_start_end(start, end):
     session = Session(engine)
     
     result5 = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-        filter(func.strftime("%Y-%m-%d", Measurement.date) >= start).\
-            filter(func.strftime("%Y-%m-%d", Measurement.date) <= end).all()
+        filter(func.strftime("%Y-%m-%d", Measurement.date) >= func.strftime("%Y-%m-%d",start)).\
+            filter(func.strftime("%Y-%m-%d", Measurement.date) <= func.strftime("%Y-%m-%d",end)).all()
     
     session.close()
     
@@ -130,7 +130,5 @@ def calc_temps_start_end(start, end):
         return jsonify(result5_list) 
     return jsonify({"error": f"start_date or end_date is not found. Insert date in yyyy-mm-dd format. The data is available up to {last_date}"}), 404
     
-
-
 if __name__ == "__main__":
     app.run(debug=True)
